@@ -3,6 +3,7 @@ const data = {
   intervals: [60],
   interval: null,
   currentIntervals: [],
+  screenLock: null,
 };
 
 const beep = new Audio("casio-chime.wav");
@@ -61,12 +62,16 @@ async function updateTimer() {
   await new Promise((r) => setTimeout(r, 1000));
 }
 
-function toggleTimer() {
+async function toggleTimer() {
   if (!data.interval) {
+    data.screenLock = await navigator.wakeLock.request()
     data.interval = setInterval(updateTimer, 1000);
     return;
   }
 
+  if (data.screenLock) {
+    await data.screenLock.release();
+  }
   clearInterval(data.interval);
   data.interval = null;
 }
@@ -85,8 +90,8 @@ resetTimer();
 displayTime();
 displayCycles();
 
-document.addEventListener("keydown", (e) => {
+document.addEventListener("keydown", async (e) => {
   if (e.code === "Space") {
-    toggleTimer();
+    await toggleTimer();
   }
 });
