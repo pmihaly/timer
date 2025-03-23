@@ -62,9 +62,16 @@ async function updateTimer() {
   await new Promise((r) => setTimeout(r, 1000));
 }
 
+async function unlockAudio() {
+  await beep.play();
+  beep.pause();
+  beep.currentTime = 0;
+}
+
 async function toggleTimer() {
   if (!data.interval) {
-    data.screenLock = await navigator.wakeLock.request()
+    await unlockAudio();
+    data.screenLock = await navigator.wakeLock.request();
     data.interval = setInterval(updateTimer, 1000);
     return;
   }
