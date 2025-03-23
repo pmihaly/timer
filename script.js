@@ -8,6 +8,12 @@ const data = {
 
 const beep = new Audio("casio-chime.wav");
 
+async function doubleBeep() {
+  await beep.play();
+  await new Promise((r) => setTimeout(r, 250));
+  await beep.play();
+}
+
 function displayTime() {
   const minutes = Math.floor(data.currentIntervals.at(-1) / 60)
     .toString()
@@ -32,7 +38,7 @@ async function updateTimer() {
     return;
   }
 
-  await beep.play();
+  await doubleBeep();
 
   data.currentIntervals.pop();
   displayTime();
@@ -54,23 +60,17 @@ async function updateTimer() {
   displayCycles();
   displayTime();
 
-  await beep.play();
+  await doubleBeep();
   await new Promise((r) => setTimeout(r, 1000));
-  await beep.play();
+  await doubleBeep();
   await new Promise((r) => setTimeout(r, 1000));
-  await beep.play();
+  await doubleBeep();
   await new Promise((r) => setTimeout(r, 1000));
-}
-
-async function unlockAudio() {
-  await beep.play();
-  beep.pause();
-  beep.currentTime = 0;
 }
 
 async function toggleTimer() {
   if (!data.interval) {
-    await unlockAudio();
+    await beep.play();
     data.screenLock = await navigator.wakeLock.request();
     data.interval = setInterval(updateTimer, 1000);
     return;
