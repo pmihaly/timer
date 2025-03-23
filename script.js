@@ -3,7 +3,6 @@ const data = {
   intervals: [60],
   interval: null,
   currentIntervals: [],
-  screenLock: null,
 };
 
 const beep = new Audio("casio-chime.wav")
@@ -57,17 +56,10 @@ function updateTimer() {
 
 function toggleTimer() {
   if (!data.interval) {
-    navigator.wakeLock
-      .request()
-      .then((sentinel) => (data.screenLock = sentinel))
-      .catch(null);
     data.interval = setInterval(updateTimer, 1000);
     return;
   }
 
-  if (data.screenLock) {
-    data.screenLock.release();
-  }
   clearInterval(data.interval);
   data.interval = null;
 }
