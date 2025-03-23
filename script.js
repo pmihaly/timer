@@ -5,7 +5,7 @@ const data = {
   currentIntervals: [],
 };
 
-const beep = new Audio("casio-chime.wav")
+const beep = new Audio("casio-chime.wav");
 
 function displayTime() {
   const minutes = Math.floor(data.currentIntervals.at(-1) / 60)
@@ -24,14 +24,15 @@ function displayCycles() {
     .padStart(2, "0");
 }
 
-function updateTimer() {
+async function updateTimer() {
   if (data.currentIntervals.at(-1) !== 0) {
     data.currentIntervals[data.currentIntervals.length - 1]--;
     displayTime();
     return;
   }
 
-  beep.play();
+  await beep.play();
+
   data.currentIntervals.pop();
   displayTime();
 
@@ -48,10 +49,16 @@ function updateTimer() {
   }
 
   toggleTimer();
-  beep.play();
   resetTimer();
   displayCycles();
   displayTime();
+
+  await beep.play();
+  await new Promise((r) => setTimeout(r, 1000));
+  await beep.play();
+  await new Promise((r) => setTimeout(r, 1000));
+  await beep.play();
+  await new Promise((r) => setTimeout(r, 1000));
 }
 
 function toggleTimer() {
